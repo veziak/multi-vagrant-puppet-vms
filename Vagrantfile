@@ -15,6 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node_name   = node[0] # name of node
     node_values = node[1] # content of node
 
+	
     config.vm.define node_name do |config|    
       # configures all forwarding ports in JSON array
       ports = node_values['ports']
@@ -25,6 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           id:    port[':id']
       end
 
+	  config.vm.box = node_values[':box']
       config.vm.hostname = node_name
       config.vm.network :private_network, ip: node_values[':ip']
 
@@ -32,8 +34,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.customize ["modifyvm", :id, "--memory", node_values[':memory']]
         vb.customize ["modifyvm", :id, "--name", node_name]
       end
-
-      config.vm.provision :shell, :path => node_values[':bootstrap']
+	
+	  
+	  if node_values[':box'].include? "win"
+	    config.vm.hostname = node_values[':host']
+		#config.vm.provision :shell, :options => ["--debug --trace --verbose"] do |puppet|
+		
+		config.vm.provision :shell, :path => "provisioner.ps1"
+          
+      #end
+	  else
+        config.vm.provision :shell, :path => node_values[':bootstrap']
+      end
+      
     end
   end
 end

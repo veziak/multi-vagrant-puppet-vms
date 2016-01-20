@@ -13,12 +13,17 @@ if cat /etc/crontab | grep puppet 2> /dev/null
 then
     echo "Puppet Agent is already configured. Exiting..."
 else
-    sudo apt-get update -yq && sudo apt-get upgrade -yq
+    
+	# Install Puppet Agent
+	wget https://apt.puppetlabs.com/puppetlabs-release-pc1-trusty.deb && \
+	sudo dpkg -i puppetlabs-release-pc1-trusty.deb && \
+	sudo apt-get update -yq && sudo apt-get upgrade -yq && \
+    sudo apt-get install -yq puppet-agent
 
-    sudo puppet resource cron puppet-agent ensure=present user=root minute=30 \
-        command='/usr/bin/puppet agent --onetime --no-daemonize --splay'
+    #sudo puppet resource cron puppet-agent ensure=present user=root minute=30 \
+    #    command='/usr/bin/puppet agent --onetime --no-daemonize --splay'
 
-    sudo puppet resource service puppet ensure=running enable=true
+    sudo /opt/puppetlabs/bin/puppet resource service puppet ensure=running enable=true
 
     # Configure /etc/hosts file
     echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
@@ -28,7 +33,7 @@ else
     echo "192.168.32.20   node02.example.com  node02" | sudo tee --append /etc/hosts 2> /dev/null
 
     # Add agent section to /etc/puppet/puppet.conf
-    echo "" && echo "[agent]\nserver=puppet" | sudo tee --append /etc/puppet/puppet.conf 2> /dev/null
+    echo "" && echo "[agent]\nserver=puppet.example.com" | sudo tee --append /etc/puppetlabs/puppet/puppet.conf 2> /dev/null
 
-    sudo puppet agent --enable
+    sudo /opt/puppetlabs/bin/puppet agent --enable
 fi
