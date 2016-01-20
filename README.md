@@ -15,23 +15,24 @@ configuration files for alternate environments since the Vagrantfile is designed
 vagrant up # brings up all VMs
 vagrant ssh puppet.example.com
 
-sudo service puppetmaster status # test that puppet master was installed
-sudo service puppetmaster stop
+sudo service puppetserver status # test that puppet master was installed
+sudo service puppetserver stop
 sudo puppet master --verbose --no-daemonize
+
 # Ctrl+C to kill puppet master
-sudo service puppetmaster start
+sudo service puppetserver start
 sudo puppet cert list --all # check for 'puppet' cert
 
 # Shift+Ctrl+T # new tab on host
 vagrant ssh node01.example.com # ssh into agent node
 sudo service puppet status # test that agent was installed
-sudo puppet agent --test --waitforcert=60 # initiate certificate signing request (CSR)
+sudo /opt/puppetlabs/bin/puppet agent --test --waitforcert=60 # initiate certificate signing request (CSR)
 ```
 Back on the Puppet Master server (puppet.example.com)
 ```
-sudo puppet cert list # should see 'node01.example.com' cert waiting for signature
-sudo puppet cert sign --all # sign the agent node(s) cert(s)
-sudo puppet cert list --all # check for signed cert(s)
+sudo /opt/puppetlabs/bin/puppet cert list # should see 'node01.example.com' cert waiting for signature
+sudo /opt/puppetlabs/bin/puppet cert sign --all # sign the agent node(s) cert(s)
+sudo /opt/puppetlabs/bin/puppet cert list --all # check for signed cert(s)
 ```
 #### Forwarding Ports
 Used by Vagrant and VirtualBox. To create additional forwarding ports, add them to the 'ports' array. For example:
