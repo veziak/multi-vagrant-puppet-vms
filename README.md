@@ -17,11 +17,11 @@ vagrant ssh puppet.example.com
 
 sudo service puppetserver status # test that puppet master was installed
 sudo service puppetserver stop
-sudo puppet master --verbose --no-daemonize
+sudo /opt/puppetlabs/bin/puppet master --verbose --no-daemonize
 
 # Ctrl+C to kill puppet master
 sudo service puppetserver start
-sudo puppet cert list --all # check for 'puppet' cert
+sudo /opt/puppetlabs/bin/puppet cert list --all # check for 'puppet' cert
 
 # Shift+Ctrl+T # new tab on host
 vagrant ssh node01.example.com # ssh into agent node

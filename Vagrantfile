@@ -38,12 +38,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	  
 	  if node_values[':box'].include? "win"
 	    config.vm.hostname = node_values[':host']
-		#config.vm.provision :shell, :options => ["--debug --trace --verbose"] do |puppet|
-		
 		config.vm.provision :shell, :path => "provisioner.ps1"
-          
-      #end
-	  else
+		config.vm.network :forwarded_port, host: 33389, guest: 3389, id: "rdp", auto_correct: true
+      else
         config.vm.provision :shell, :path => node_values[':bootstrap']
       end
       
